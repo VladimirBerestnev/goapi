@@ -2,7 +2,7 @@ package files
 
 import (
 	"encoding/json"
-	"go/rest/internal/app/models"
+	"go/rest/internal/models"
 	"net/http"
 	"os"
 

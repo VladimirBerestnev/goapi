@@ -3,7 +3,7 @@ package files
 import (
 	"encoding/json"
 	"errors"
-	"go/rest/internal/app/models"
+	"go/rest/internal/models"
 	"log"
 	"os"
 )
