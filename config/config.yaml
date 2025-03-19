@@ -1,1 +1,1 @@
-filename: "tasks.json"
+db_path: "./storage.db"

@@ -9,5 +9,3 @@ type Task struct {
 	Status   bool      `json:"status"`
 	Priority string    `json:"priority"`
 }
-
-var Tasklist = map[uuid.UUID]Task{}

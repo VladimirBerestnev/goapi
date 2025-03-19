@@ -1,22 +1,19 @@
 package routing
 
 import (
-	"go/rest/internal/app/files"
-	"go/rest/internal/app/handlers"
+	"go/rest/internal/app/delivery"
 
 	"github.com/gin-gonic/gin"
 )
 
-func APIrout() {
-
+func APIrout(handler *delivery.Handler) {
 	r := gin.Default()
 	Router := r.Group("/task")
 	{
-		Router.GET("/", handlers.GetTask)
-		Router.POST("/", handlers.AddTask)
-		Router.PUT("/:id", handlers.PutTask)
-		Router.DELETE("/:id", handlers.DeleteTask)
-		Router.POST("/save", files.SaveInFile)
+		Router.GET("/", handler.GetTask)
+		Router.POST("/", handler.AddTask)
+		Router.PUT("/:id", handler.UpdateTask)
+		Router.DELETE("/:id", handler.DeleteTask)
 	}
 	r.Run(":8080")
 }
