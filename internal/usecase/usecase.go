@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"go/rest/internal/entity"
 
 	"github.com/google/uuid"
@@ -14,19 +15,19 @@ func New(repo IDatabase) *UseCase {
 	return &UseCase{repository: repo}
 }
 
-func (uc *UseCase) CreateTask(task entity.Task) (uuid.UUID, error) {
+func (uc *UseCase) CreateTask(c context.Context, task entity.Task) (uuid.UUID, error) {
 	task.ID = uuid.New()
-	return task.ID, uc.repository.Create(task)
+	return task.ID, uc.repository.Create(c, task)
 }
 
-func (uc *UseCase) GetTask() ([]entity.Task, error) {
-	return uc.repository.Get()
+func (uc *UseCase) GetTask(c context.Context) ([]entity.Task, error) {
+	return uc.repository.Get(c)
 }
 
-func (uc *UseCase) DeleteTask(s string) error {
-	return uc.repository.Delete(s)
+func (uc *UseCase) DeleteTask(c context.Context, s string) error {
+	return uc.repository.Delete(c, s)
 }
 
-func (uc *UseCase) UpdateTask(task entity.Task) error {
-	return uc.repository.Update(task)
+func (uc *UseCase) UpdateTask(c context.Context, task entity.Task) error {
+	return uc.repository.Update(c, task)
 }

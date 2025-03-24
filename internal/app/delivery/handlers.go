@@ -1,9 +1,11 @@
 package delivery
 
 import (
+	"context"
 	"go/rest/internal/entity"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -18,12 +20,16 @@ func New(ucase IUseCase) *Handler {
 }
 
 func (h *Handler) AddTask(ctx *gin.Context) {
+
+	c, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	var newTask entity.Task
 	if err := ctx.ShouldBindJSON(&newTask); err != nil {
 		ctx.JSON(http.StatusBadRequest, err)
 		return
 	}
-	id, err := h.uc.CreateTask(newTask)
+	id, err := h.uc.CreateTask(c, newTask)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err)
 		return
@@ -33,12 +39,16 @@ func (h *Handler) AddTask(ctx *gin.Context) {
 }
 
 func (h *Handler) GetTask(ctx *gin.Context) {
+
+	c, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	statusStr := ctx.Query("status")
 	priorityStr := ctx.Query("priority")
 
 	ctx.Header("Cache-Control", "public, max-age=3600")
 
-	tasks, err := h.uc.GetTask()
+	tasks, err := h.uc.GetTask(c)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err)
 		return
@@ -67,6 +77,9 @@ func (h *Handler) GetTask(ctx *gin.Context) {
 
 func (h *Handler) DeleteTask(ctx *gin.Context) {
 
+	c, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	parsedID, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "error ID"})
@@ -74,7 +87,7 @@ func (h *Handler) DeleteTask(ctx *gin.Context) {
 	}
 	stringID := parsedID.String()
 
-	if err = h.uc.DeleteTask(stringID); err != nil {
+	if err = h.uc.DeleteTask(c, stringID); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "task not found"})
 		return
 	}
@@ -82,6 +95,9 @@ func (h *Handler) DeleteTask(ctx *gin.Context) {
 }
 
 func (h *Handler) UpdateTask(ctx *gin.Context) {
+
+	c, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	parsedID, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {
@@ -94,7 +110,7 @@ func (h *Handler) UpdateTask(ctx *gin.Context) {
 		return
 	}
 	newTask.ID = parsedID
-	err = h.uc.UpdateTask(newTask)
+	err = h.uc.UpdateTask(c, newTask)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err)
 		return

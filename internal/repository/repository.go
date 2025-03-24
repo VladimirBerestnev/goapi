@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"go/rest/internal/app/files"
@@ -34,18 +35,18 @@ priority TEXT);`
 	return &Repo{db: db}
 }
 
-func (r *Repo) Create(task entity.Task) error {
+func (r *Repo) Create(c context.Context, task entity.Task) error {
 	query := `INSERT INTO tasks (ID, TITLE, DESCRIPTION, STATUS, PRIORITY) VALUES (?, ?, ?, ?, ?);`
 
-	_, err := r.db.Exec(query, task.ID, task.Title, task.Desc, task.Status, task.Priority)
+	_, err := r.db.ExecContext(c, query, task.ID, task.Title, task.Desc, task.Status, task.Priority)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r *Repo) Update(task entity.Task) error {
-	_, err := r.db.Exec("UPDATE tasks SET TITLE=?, DESCRIPTION=?, STATUS = ?, PRIORITY = ? where id = ?",
+func (r *Repo) Update(c context.Context, task entity.Task) error {
+	_, err := r.db.ExecContext(c, "UPDATE tasks SET TITLE=?, DESCRIPTION=?, STATUS = ?, PRIORITY = ? where id = ?",
 		task.Title, task.Desc, task.Status, task.Priority, task.ID)
 	if err != nil {
 		return err
@@ -53,16 +54,16 @@ func (r *Repo) Update(task entity.Task) error {
 	return nil
 }
 
-func (r *Repo) Delete(s string) error {
-	_, err := r.db.Exec("DELETE FROM tasks WHERE ID = ?", s)
+func (r *Repo) Delete(c context.Context, s string) error {
+	_, err := r.db.ExecContext(c, "DELETE FROM tasks WHERE ID = ?", s)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r *Repo) Get() ([]entity.Task, error) {
-	rows, err := r.db.Query("select * from tasks")
+func (r *Repo) Get(c context.Context) ([]entity.Task, error) {
+	rows, err := r.db.QueryContext(c, "select * from tasks")
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
