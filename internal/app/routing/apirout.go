@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func APIrout(handler *delivery.Handler) {
-	r := gin.Default()
+func APIrout(r *gin.Engine, handler *delivery.Handler) {
+
 	Router := r.Group("/task")
 	{
 		Router.GET("/", handler.GetTask)
