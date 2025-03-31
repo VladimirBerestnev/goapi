@@ -1,4 +1,4 @@
-package repository
+package sqlite
 
 import (
 	"context"
@@ -6,7 +6,10 @@ import (
 	"fmt"
 	"go/rest/internal/app/files"
 	"go/rest/internal/entity"
+	_ "go/rest/migrations"
 
+	_ "github.com/lib/pq"
+	"github.com/pressly/goose/v3"
 	_ "modernc.org/sqlite"
 )
 
@@ -21,17 +24,11 @@ func New() *Repo {
 		panic(err)
 	}
 
-	initQuery := `CREATE TABLE IF NOT EXISTS tasks (
-id TEXT PRIMARY KEY,
-title TEXT NOT NULL,
-description TEXT,
-status BOOLEAN,
-priority TEXT);`
-
-	_, err = db.Exec(initQuery)
-	if err != nil {
+	if err = UpMigrations(db); err != nil {
 		panic(err)
 	}
+	fmt.Println("Successfully connected!")
+
 	return &Repo{db: db}
 }
 
@@ -81,4 +78,14 @@ func (r *Repo) Get(c context.Context) ([]entity.Task, error) {
 		tasks = append(tasks, t)
 	}
 	return tasks, err
+}
+
+func UpMigrations(db *sql.DB) error {
+	if err := goose.SetDialect("sqlite"); err != nil {
+		return err
+	}
+	if err := goose.Up(db, "."); err != nil {
+		return err
+	}
+	return nil
 }

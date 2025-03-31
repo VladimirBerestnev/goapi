@@ -1,0 +1,10 @@
+services:
+  pgdb:
+    image: "postgres:13"
+    container_name: "pgdb"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    ports:
+      - "54320:5432"

@@ -3,15 +3,16 @@ package usecase
 import (
 	"context"
 	"go/rest/internal/entity"
+	"go/rest/internal/repository"
 
 	"github.com/google/uuid"
 )
 
 type UseCase struct {
-	repository IDatabase
+	repository repository.IDatabase
 }
 
-func New(repo IDatabase) *UseCase {
+func New(repo repository.IDatabase) *UseCase {
 	return &UseCase{repository: repo}
 }
 

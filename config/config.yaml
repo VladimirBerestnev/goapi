@@ -1,1 +1,7 @@
 db_path: "./storage.db"
+dbType: "postgres"
+host: "localhost"
+postgresUser: "user"
+postgresPass: "password"
+postgresDB: "postgres"
+postgresPort: 54320
