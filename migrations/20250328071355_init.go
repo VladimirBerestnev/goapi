@@ -28,7 +28,6 @@ func upInit(ctx context.Context, tx *sql.Tx) error {
 
 func downInit(ctx context.Context, tx *sql.Tx) error {
 	query := `DROP TABLE tasks`
-
 	_, err := tx.ExecContext(ctx, query)
 	if err != nil {
 		return err

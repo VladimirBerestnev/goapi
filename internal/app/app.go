@@ -25,7 +25,6 @@ type App struct {
 func New(logger ILogger) *App {
 
 	engine := gin.Default()
-
 	handler := delivery.New(usecase.New(repository.New()))
 	routing.APIrout(engine, handler)
 

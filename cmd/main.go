@@ -6,9 +6,6 @@ import (
 )
 
 func main() {
-
-	appLogger := logger.Initialize()
-
+	appLogger := logger.GetLogger()
 	app.New(appLogger)
-
 }

@@ -34,7 +34,6 @@ func New() *Repo {
 
 func (r *Repo) Create(c context.Context, task entity.Task) error {
 	query := `INSERT INTO tasks (ID, TITLE, DESCRIPTION, STATUS, PRIORITY) VALUES (?, ?, ?, ?, ?);`
-
 	_, err := r.db.ExecContext(c, query, task.ID, task.Title, task.Desc, task.Status, task.Priority)
 	if err != nil {
 		return err
